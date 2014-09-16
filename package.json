@@ -1,0 +1,16 @@
+{
+  "name": "ip2location.node",
+  "version": "1.0.0",
+  "description": "[ip2location.com](http://www.ip2location.com/) bindings for nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node-gyp rebuild"
+  },
+  "author": "Yorkie Neil<yorkiefixer@gmail.com>",
+  "license": "MIT",
+  "gypfile": true,
+  "dependencies": {
+    "nan": "^1.3.0"
+  }
+}
