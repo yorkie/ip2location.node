@@ -1,6 +1,6 @@
 {
   "name": "ip2location.node",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "[ip2location.com](http://www.ip2location.com/) bindings for nodejs",
   "main": "index.js",
   "scripts": {
