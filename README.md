@@ -12,7 +12,7 @@ see [example](example.js)
 
 * `IP2Location(path)` your ip2location binrary file path
 
-* `.get`: list all profile
+* `.query(ip)`: list all profile
 
 ### Installation
 

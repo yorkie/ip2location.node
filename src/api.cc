@@ -21,12 +21,12 @@ void IP2LocationWrap::Init(Handle<Object> target) {
   NanScope();
   Local<FunctionTemplate> t = NanNew<FunctionTemplate>(New);
   t->InstanceTemplate()->SetInternalFieldCount(1);
-  NODE_SET_PROTOTYPE_METHOD(t, "getAll", GetCountryShort);
-  NODE_SET_PROTOTYPE_METHOD(t, "getCountryLong", GetCountryLong);
-  NODE_SET_PROTOTYPE_METHOD(t, "getRegion", GetRegion);
-  NODE_SET_PROTOTYPE_METHOD(t, "getCity", GetCity);
-  NODE_SET_PROTOTYPE_METHOD(t, "getISP", GetISP);
-  NODE_SET_PROTOTYPE_METHOD(t, "getAll", GetAll);
+  NODE_SET_PROTOTYPE_METHOD(t, "queryCountryShort", GetCountryShort);
+  NODE_SET_PROTOTYPE_METHOD(t, "queryCountryLong", GetCountryLong);
+  NODE_SET_PROTOTYPE_METHOD(t, "queryRegion", GetRegion);
+  NODE_SET_PROTOTYPE_METHOD(t, "queryCity", GetCity);
+  NODE_SET_PROTOTYPE_METHOD(t, "queryISP", GetISP);
+  NODE_SET_PROTOTYPE_METHOD(t, "query", GetAll);
   target->Set(NanNew<v8::String>("IP2Location"), t->GetFunction());
 }
 
