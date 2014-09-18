@@ -24,7 +24,7 @@ see [example](example.js)
 
 * `.query(ip)`: list all profile
 
-# Benchmark
+### Benchmark
 
 100000 calls to `query` means 180+ ms
 
