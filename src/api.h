@@ -12,7 +12,7 @@ using namespace node;
 
 class IP2LocationWrap : public ObjectWrap {
 public:
-  IP2LocationWrap(char * db);
+  IP2LocationWrap(char * db, enum IP2Location_mem_type mtype);
   ~IP2LocationWrap();
 
   static void Init(Handle<Object> target);

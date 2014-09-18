@@ -9,8 +9,9 @@
 
 using namespace v8;
 
-IP2LocationWrap::IP2LocationWrap(char * db) {
+IP2LocationWrap::IP2LocationWrap(char *db, enum IP2Location_mem_type mtype) {
   loc = IP2Location_open(db);
+  IP2Location_open_mem(loc, mtype);
 }
 
 IP2LocationWrap::~IP2LocationWrap() {
@@ -33,10 +34,23 @@ void IP2LocationWrap::Init(Handle<Object> target) {
 NAN_METHOD(IP2LocationWrap::New) {
   NanScope();
   char *db;
-  v8::String::Utf8Value v8_db(args[0]->ToString());
-  db = *v8_db;
+  char *mtype_str;
+  enum IP2Location_mem_type mtype = IP2LOCATION_CACHE_MEMORY;
 
-  IP2LocationWrap *locwrap = new IP2LocationWrap(db);
+  v8::String::Utf8Value v8_db(args[0]->ToString());
+  v8::String::Utf8Value v8_mtype_str(args[1]->ToString());
+  db = *v8_db;
+  mtype_str = *v8_mtype_str;
+
+  if (strcmp("use_cache", mtype_str) == 0) {
+    mtype = IP2LOCATION_CACHE_MEMORY;
+  } else if (strcmp("use_shared_memory", mtype_str) == 0) {
+    mtype = IP2LOCATION_SHARED_MEMORY;
+  } else if (strcmp("use_file_io", mtype_str) == 0) {
+    mtype = IP2LOCATION_FILE_IO;
+  }
+
+  IP2LocationWrap *locwrap = new IP2LocationWrap(db, mtype);
   locwrap->Wrap(args.This());
   NanReturnValue(args.This());
 }
@@ -46,7 +60,9 @@ NAN_METHOD(IP2LocationWrap::GetCountryShort) {
   IP2LocationWrap *locwrap = ObjectWrap::Unwrap<IP2LocationWrap>(args.This());
   v8::String::Utf8Value v8_ip(args[0]->ToString());
   IP2LocationRecord * record = IP2Location_get_country_short(locwrap->loc, *v8_ip);
-  NanReturnValue(NanNew<String>(record->country_short));
+  Local<String> ret = NanNew<String>(record->country_short);
+  IP2Location_free_record(record);
+  NanReturnValue(ret);
 }
 
 NAN_METHOD(IP2LocationWrap::GetCountryLong) {
@@ -54,7 +70,9 @@ NAN_METHOD(IP2LocationWrap::GetCountryLong) {
   IP2LocationWrap *locwrap = ObjectWrap::Unwrap<IP2LocationWrap>(args.This());
   v8::String::Utf8Value v8_ip(args[0]->ToString());
   IP2LocationRecord * record = IP2Location_get_country_long(locwrap->loc, *v8_ip);
-  NanReturnValue(NanNew<String>(record->country_long));
+  Local<String> ret = NanNew<String>(record->country_long);
+  IP2Location_free_record(record);
+  NanReturnValue(ret);
 }
 
 NAN_METHOD(IP2LocationWrap::GetRegion) {
@@ -62,7 +80,9 @@ NAN_METHOD(IP2LocationWrap::GetRegion) {
   IP2LocationWrap *locwrap = ObjectWrap::Unwrap<IP2LocationWrap>(args.This());
   v8::String::Utf8Value v8_ip(args[0]->ToString());
   IP2LocationRecord * record = IP2Location_get_region(locwrap->loc, *v8_ip);
-  NanReturnValue(NanNew<String>(record->region));
+  Local<String> ret = NanNew<String>(record->region);
+  IP2Location_free_record(record);
+  NanReturnValue(ret);
 }
 
 NAN_METHOD(IP2LocationWrap::GetCity) {
@@ -70,7 +90,9 @@ NAN_METHOD(IP2LocationWrap::GetCity) {
   IP2LocationWrap *locwrap = ObjectWrap::Unwrap<IP2LocationWrap>(args.This());
   v8::String::Utf8Value v8_ip(args[0]->ToString());
   IP2LocationRecord * record = IP2Location_get_city(locwrap->loc, *v8_ip);
-  NanReturnValue(NanNew<String>(record->city));
+  Local<String> ret = NanNew<String>(record->city);
+  IP2Location_free_record(record);
+  NanReturnValue(ret);
 }
 
 NAN_METHOD(IP2LocationWrap::GetISP) {
@@ -78,7 +100,9 @@ NAN_METHOD(IP2LocationWrap::GetISP) {
   IP2LocationWrap *locwrap = ObjectWrap::Unwrap<IP2LocationWrap>(args.This());
   v8::String::Utf8Value v8_ip(args[0]->ToString());
   IP2LocationRecord * record = IP2Location_get_isp(locwrap->loc, *v8_ip);
-  NanReturnValue(NanNew<String>(record->isp));
+  Local<String> ret = NanNew<String>(record->isp);
+  IP2Location_free_record(record);
+  NanReturnValue(ret);
 }
 
 NAN_METHOD(IP2LocationWrap::GetAll) {
@@ -108,6 +132,7 @@ NAN_METHOD(IP2LocationWrap::GetAll) {
   res->Set(NanNew<String>("mobilebrand"), NanNew<String>(record->mobilebrand));
   res->Set(NanNew<String>("elevation"), NanNew<Number>(record->elevation));
   res->Set(NanNew<String>("usagetype"), NanNew<String>(record->usagetype));
+  IP2Location_free_record(record);
   NanReturnValue(res);
 }
 
